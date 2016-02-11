@@ -1,0 +1,38 @@
+.slide-content {
+    height: 750px !important;
+    padding-top: 15px !important;
+    margin-top : 20px !important;
+    overflow: visible !important;
+}
+
+h4 {
+    margin-top: 15px !important;
+    margin-bottom: 0px !important;
+
+}
+
+ul {
+    margin-top: 5px !important;
+    padding-top: 5px !important;
+}
+
+li {
+    margin-top: 15px !important;
+}
+
+p {
+    margin-top: 35px !important;
+}
+
+sup {
+    font-size : 20px !important;
+}
+
+section {
+    margin-left: 326px !important;
+}
+
+.profile-pic {
+    float: left;
+    margin-right: 50px;
+}

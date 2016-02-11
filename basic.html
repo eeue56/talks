@@ -1,0 +1,882 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>Experiments in Elm</title>
+  <style type="text/css">
+    body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #222;
+  font-size: 100%;
+}
+
+.slide {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 0; right: 0;
+  background-color: #f7f7f7;
+}
+
+.slide-content {
+  width: 800px;
+  height: 600px;
+  overflow: hidden;
+  margin: 80px auto 0 auto;
+  padding: 30px;
+
+  font-weight: 200;
+  font-size: 200%;
+  line-height: 1.375;
+}
+
+.controls {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
+
+.arrow {
+  width: 0; height: 0;
+  border: 30px solid #333;
+  float: left;
+  margin-right: 30px;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.prev {
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+
+  border-left-width: 0;
+  border-right-width: 50px;
+}
+
+.next {
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+
+  border-left-width: 50px;
+  border-right-width: 0;
+}
+
+.prev:hover {
+  border-right-color: #888;
+  cursor: pointer;
+}
+
+.next:hover {
+  border-left-color: #888;
+  cursor: pointer;
+}
+
+h1 {
+  font-size: 300%;
+  line-height: 1.2;
+  text-align: center;
+  margin: 170px 0 0;
+}
+
+h2 {
+  font-size: 100%;
+  line-height: 1.2;
+  margin: 5px 0;
+  text-align: center;
+  font-weight: 200;
+}
+
+h3 {
+  font-size: 140%;
+  line-height: 1.2;
+  border-bottom: 1px solid #aaa;
+  margin: 0;
+  padding-bottom: 15px;
+}
+
+ul {
+  padding: 20px 0 0 60px;
+  font-weight: 200;
+  line-height: 1.375;
+}
+
+.author h1 {
+  font-size: 170%;
+  font-weight: 200;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.author h3 {
+  font-weight: 100;
+  text-align: center;
+  font-size: 95%;
+  border: none;
+}
+
+a {
+  text-decoration: none;
+  color: #44a4dd;
+}
+
+a:hover {
+  color: #66b5ff;
+}
+
+pre {
+  font-size: 60%;
+  line-height: 1.3;
+}
+
+.progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+.progress-bar {
+  width: 0%;
+  height: 3px;
+  background-color: #b4b4b4;
+
+  -webkit-transition: width 0.05s ease-out;
+  -moz-transition: width 0.05s ease-out;
+  -o-transition: width 0.05s ease-out;
+  transition: width 0.05s ease-out;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 850px) {
+
+  body {
+    font-size: 70%;
+  }
+
+  .slide-content {
+    width: auto;
+  }
+
+  img {
+    width: 100%;
+  }
+
+  h1 {
+    margin-top: 120px;
+  }
+
+  .prev, .prev:hover {
+    border-right-color: rgba(135, 135, 135, 0.5);
+  }
+
+  .next, .next:hover {
+    border-left-color: rgba(135, 135, 135, 0.5);
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 50%;
+    overflow: hidden;
+  }
+
+  .slide-content {
+    padding: 10px;
+    margin-top: 10px;
+    height: 340px;
+  }
+
+  h1 {
+    margin-top: 50px;
+  }
+
+  ul {
+    padding-left: 25px;
+  }
+}
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact;
+  }
+
+  @page {
+    size: letter;
+  }
+
+  .hidden {
+    display: inline;
+  }
+
+  html {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  body {
+    margin: 0 auto !important;
+    border: 0;
+    padding: 0;
+    float: none !important;
+    overflow: visible;
+    background: none !important;
+    font-size: 52%;
+  }
+
+  .progress, .controls {
+    display: none;
+  }
+
+  .slide {
+    position: static;
+  }
+
+  .slide-content {
+    border: 1px solid #222;
+    margin-top: 0;
+    margin-bottom: 40px;
+    height: 3.5in;
+    overflow: visible;
+  }
+
+  .slide:nth-child(even) {
+    /* 2 slides per page */
+    page-break-before: always;
+  }
+}
+
+/*
+
+github.com style (c) Vasily Polovnyov <vast@whiteants.net>
+
+*/
+
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  color: #333;
+  background: #f8f8f8;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #998;
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-subst {
+  color: #333;
+  font-weight: bold;
+}
+
+.hljs-number,
+.hljs-literal,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag .hljs-attr {
+  color: #008080;
+}
+
+.hljs-string,
+.hljs-doctag {
+  color: #d14;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-selector-id {
+  color: #900;
+  font-weight: bold;
+}
+
+.hljs-subst {
+  font-weight: normal;
+}
+
+.hljs-type,
+.hljs-class .hljs-title {
+  color: #458;
+  font-weight: bold;
+}
+
+.hljs-tag,
+.hljs-name,
+.hljs-attribute {
+  color: #000080;
+  font-weight: normal;
+}
+
+.hljs-regexp,
+.hljs-link {
+  color: #009926;
+}
+
+.hljs-symbol,
+.hljs-bullet {
+  color: #990073;
+}
+
+.hljs-built_in,
+.hljs-builtin-name {
+  color: #0086b3;
+}
+
+.hljs-meta {
+  color: #999;
+  font-weight: bold;
+}
+
+.hljs-deletion {
+  background: #fdd;
+}
+
+.hljs-addition {
+  background: #dfd;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+.slide-content {
+    height: 750px !important;
+    padding-top: 15px !important;
+    margin-top : 20px !important;
+    overflow: visible !important;
+}
+
+h4 {
+    margin-top: 15px !important;
+    margin-bottom: 0px !important;
+
+}
+
+ul {
+    margin-top: 5px !important;
+    padding-top: 5px !important;
+}
+
+li {
+    margin-top: 15px !important;
+}
+
+p {
+    margin-top: 35px !important;
+}
+
+sup {
+    font-size : 20px !important;
+}
+
+section {
+    margin-left: 326px !important;
+}
+
+.profile-pic {
+    float: left;
+    margin-right: 50px;
+}
+
+  </style>
+</head>
+<body>
+    <div class="progress">
+    <div class="progress-bar"></div>
+  </div>
+
+  <div class="slide" id="slide-1">
+    <section class="slide-content"><h1 id="experiments-in-elm">Experiments in Elm</h1>
+<h2 id="push-elm-to-the-limit">Push Elm to the limit</h2>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-2">
+    <section class="slide-content"><p><img class="profile-pic" src="./images/profile.png"></img></p>
+<h2 id="noah-hall">Noah Hall</h2>
+<ul>
+<li>@eeue56</li>
+<li>NoRedInk</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-3">
+    <section class="slide-content"><h3 id="things">Things</h3>
+<ul>
+<li>Improving Elm tooling for devops</li>
+<li>Take aways from Server side Elm</li>
+<li>The future of debugging</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-4">
+    <section class="slide-content"><h3 id="elm-package">elm-package</h3>
+<ul>
+<li>manages dependencies and figures out what packages you need to download</li>
+<li>only downloads packages, doesn&#39;t compile</li>
+<li>packages hosted on github</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-5">
+    <section class="slide-content"><h3 id="github-for-package-hosting">Github for package hosting</h3>
+<ul>
+<li>Slow</li>
+<li>Flakey as a host</li>
+<li>Sometimes goes down</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-6">
+    <section class="slide-content"><pre><code class="lang-elm"><span class="hljs-type">Noahs</span>-<span class="hljs-type">MacBook</span>-<span class="hljs-type">Pro</span>:take-home noah$ time epi install <span class="hljs-comment">--yes</span>
+<span class="hljs-type">Downloading</span> <span class="hljs-type">NoRedInk</span>/start-app
+<span class="hljs-type">Downloading</span> circuithub/elm-json-extra
+<span class="hljs-type">Downloading</span> elm-lang/core
+<span class="hljs-type">Downloading</span> evancz/elm-effects
+<span class="hljs-type">Downloading</span> evancz/elm-html
+<span class="hljs-type">Downloading</span> evancz/virtual-dom
+<span class="hljs-type">Packages</span> configured successfully!
+
+<span class="hljs-title">real</span>  <span class="hljs-number">0</span>m9<span class="hljs-number">.856</span>s
+<span class="hljs-title">user</span>  <span class="hljs-number">0</span>m0<span class="hljs-number">.676</span>s
+<span class="hljs-title">sys</span> <span class="hljs-number">0</span>m0<span class="hljs-number">.144</span>s</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-7">
+    <section class="slide-content"><h3 id="elm-in-production-ops">Elm in production: ops</h3>
+<ul>
+<li>Tests run lots of times, github becomes a bottleneck</li>
+<li><code>elm-package</code> unreliability meant slower tests</li>
+<li>One of the bigger pain points with Elm</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-8">
+    <section class="slide-content"><h3 id="evan-joins-noredink">Evan joins NoRedInk</h3>
+<ul>
+<li>One of the first issues brought up</li>
+<li>Spent a day talking about long term solutions</li>
+<li>Came up with a reasonable short term solution</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-9">
+    <section class="slide-content"><pre><code class="lang-elm"><span class="hljs-type">Noahs</span>-<span class="hljs-type">MacBook</span>-<span class="hljs-type">Pro</span>:take-home noah$ time epi install <span class="hljs-comment">--yes --host http://192.168.99.100:32768/</span>
+<span class="hljs-type">Downloading</span> <span class="hljs-type">NoRedInk</span>/start-app
+<span class="hljs-type">Downloading</span> circuithub/elm-json-extra
+<span class="hljs-type">Downloading</span> elm-lang/core
+<span class="hljs-type">Downloading</span> evancz/elm-effects
+<span class="hljs-type">Downloading</span> evancz/elm-html
+<span class="hljs-type">Downloading</span> evancz/virtual-dom
+<span class="hljs-type">Packages</span> configured successfully!
+
+<span class="hljs-title">real</span>  <span class="hljs-number">0</span>m0<span class="hljs-number">.568</span>s
+<span class="hljs-title">user</span>  <span class="hljs-number">0</span>m0<span class="hljs-number">.262</span>s
+<span class="hljs-title">sys</span> <span class="hljs-number">0</span>m0<span class="hljs-number">.109</span>s</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-10">
+    <section class="slide-content"><h3 id="going-upstream">Going upstream</h3>
+<ul>
+<li>Will be added to upstream <code>elm-package</code></li>
+<li>Docker image for caching layer exists</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-11">
+    <section class="slide-content"><h1 id="server-side-elm">Server-side Elm</h1>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-12">
+    <section class="slide-content"><h3 id="background">Background</h3>
+<ul>
+<li>Went to ReactiveConf, lots of people asked about server-side Elm</li>
+<li>At the time, NRI were looking for a new backend technology</li>
+<li>Decided to try it out on a small separate production problem</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-13">
+    <section class="slide-content"><h3 id="noredink-take-home">NoRedInk/take-home</h3>
+<ul>
+<li>Based off of fresheyeball&#39;s PoC</li>
+<li>Rewritten to work with server-side StartApp</li>
+<li>All non-library code written in Elm</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-14">
+    <section class="slide-content"><h3 id="supported-features">Supported features</h3>
+<ul>
+<li>Full stack Elm</li>
+<li>Shared models</li>
+<li>Server-side rendering of static views</li>
+<li>CSS through elm-css</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-15">
+    <section class="slide-content"><h3 id="structure">Structure</h3>
+<ul>
+<li><code>src</code> for library code, wrappers around Node libraries</li>
+<li><code>instance/server</code> for actual code, pure Elm</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-16">
+    <section class="slide-content"><h3 id="everything-in-elm">Everything in Elm</h3>
+<ul>
+<li>Write once, run everywhere</li>
+<li>Seemless function and type sharing</li>
+<li>Compile-time safety of server-client interactions</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-17">
+    <section class="slide-content"><h3 id="user-model">User model</h3>
+<pre><code class="lang-elm"><span class="hljs-keyword">type</span> <span class="hljs-keyword">alias</span> <span class="hljs-type">User</span> =
+  { token : <span class="hljs-type">String</span>
+  , name : <span class="hljs-type">String</span>
+  , email : <span class="hljs-type">String</span>
+  , role : <span class="hljs-type">String</span>
+  , startTime : <span class="hljs-type">Maybe</span> <span class="hljs-type">Moment</span>
+  , endTime : <span class="hljs-type">Maybe</span> <span class="hljs-type">Moment</span>
+  , submissionLocation : <span class="hljs-type">Maybe</span> <span class="hljs-type">String</span>
+  , test : <span class="hljs-type">Maybe</span> <span class="hljs-type">TestEntry</span>
+  }</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-18">
+    <section class="slide-content"><h3 id="some-user-functions">Some user functions</h3>
+<pre><code class="lang-elm">
+<span class="hljs-title">initials</span> : <span class="hljs-type">User</span> -&gt; <span class="hljs-type">String</span>
+<span class="hljs-title">initials</span> user =
+    <span class="hljs-type">String</span>.words user.name
+        |&gt; <span class="hljs-type">List</span>.map (<span class="hljs-type">String</span>.left <span class="hljs-number">1</span>)
+        |&gt; <span class="hljs-type">String</span>.join <span class="hljs-string">""</span>
+        |&gt; <span class="hljs-type">String</span>.toUpper</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-19">
+    <section class="slide-content"><h3 id="data-injection">Data injection</h3>
+<ul>
+<li>Sent as a json dump to client code</li>
+<li>Sent to Elm through a port on load</li>
+<li>Parsed through a Json Decoder to ensure the API from the server was as expected</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-20">
+    <section class="slide-content"><h3 id="no-need-when-your-interactions-share-types">No need when your interactions share types</h3>
+<ul>
+<li>Compile time checks instead of runtime checks</li>
+<li>API enforced at compile time, not runtime</li>
+<li>Ensures that your data is consistent on both sides</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-21">
+    <section class="slide-content"><h3 id="server-side-rendering">Server-side rendering</h3>
+<ul>
+<li>Works for pages that don&#39;t require interaction</li>
+<li>Done on half of the pages of the take-home site</li>
+<li>0.17 will make this easier</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-22">
+    <section class="slide-content"><h3 id="should-i-use-server-side-elm-">Should I use server side Elm?</h3>
+<ul>
+<li>Not yet</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-23">
+    <section class="slide-content"><h3 id="a-day-in-the-life-of-a-server-side-elm-programmer-right-now">A day in the life of a server-side Elm programmer right now</h3>
+<ul>
+<li>Write some business logic in Elm</li>
+<li>Realise that you need some library support that doesn&#39;t exist in Elm</li>
+<li>Spend the rest of the day fighting Node</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-24">
+    <section class="slide-content"><h3 id="the-battles">The battles</h3>
+<ul>
+<li>A lot of libraries work based on mutation<pre><code class="lang-javascript"><span class="hljs-keyword">return</span> Moment(moment).format().toObject();</code></pre>
+</li>
+<li>A liberal API doesn&#39;t work well with static typing</li>
+<li>There&#39;s not always a clear path to Elm integration</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-25">
+    <section class="slide-content"><h3 id="going-forward">Going forward</h3>
+<ul>
+<li>Not in the near future</li>
+<li>More likely to be based on some platform that fits Elm&#39;s model, like Beam</li>
+<li>The advantages of having Elm everywhere will still remain</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-26">
+    <section class="slide-content"><h1 id="the-future-of-debugging-with-elm">The future of debugging with Elm</h1>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-27">
+    <section class="slide-content"><h2 id="firebase">Firebase</h2>
+<ul>
+<li>Store syncronized data accessible by multiple clients</li>
+<li>A client may be a server</li>
+<li>Have to write update callbacks yourself</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-28">
+    <section class="slide-content"><h3 id="flux-over-the-wire">Flux over the wire</h3>
+<ul>
+<li>Use a server which implements flux with websockets to use as a store</li>
+<li>Influence frameworks like Relay</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-29">
+    <section class="slide-content"><h3 id="server-side-elm-without-the-wires">Server-side Elm without the wires</h3>
+<ul>
+<li>Right now server-side Elm is structured in a way such that actions can be run seemlessly on the server</li>
+<li>I&#39;m working on a prototype of this with websocket support</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-30">
+    <section class="slide-content"><h3 id="what-about-elm-reactor-">What about elm-reactor?</h3>
+<ul>
+<li>Taking parts of the elm-reactor that capture actions</li>
+<li>Now we can sync the actions through use of websockets</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-31">
+    <section class="slide-content"><h3 id="what-about-the-rest-of-elm-reactor-">What about the rest of elm-reactor?</h3>
+<ul>
+<li>Well, things in Elm are immutable</li>
+<li>Immutablity means actions sent over the wire should have the same result on each</li>
+<li>This allows us to &quot;time-travel&quot; by replaying certain actions from a given model start</li>
+<li>Now our sessions are synced both in real time and the past</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-32">
+    <section class="slide-content"><h3 id="what-about-time-travelling-forward-">What about time travelling forward?</h3>
+<ul>
+<li>Store session at a time on the server</li>
+<li>Then any time a new client joins, swap the runtime data out</li>
+<li>Now your new client is at the saved state</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-33">
+    <section class="slide-content"><h2 id="what-about-different-paths-">What about different paths?</h2>
+<ul>
+<li>Disable sync</li>
+<li>Login as two different users</li>
+<li>Enable sync</li>
+<li>Now you can ensure that the UX is the same for each user</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-34">
+    <section class="slide-content"><h3 id="key-take-aways">Key take aways</h3>
+<ul>
+<li>Elm package improvements will be coming soon</li>
+<li>Server side Elm has revealed some good patterns</li>
+<li>Elm&#39;s implementation gives you a lot of power over the lifecycle of your applications</li>
+<li>Our developer tools will only get better</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-35">
+    <section class="slide-content"><div class="author">
+  <h1 class="name">Noah (eeue56)</h1>
+    <h3 class="twitter">
+      <a href="http://twitter.com/@eeue56">@eeue56</a>
+    </h3>
+    <h3 class="url">
+      <a href="https://github.com/eeue56">https://github.com/eeue56</a>
+    </h3>
+</div>
+</section>
+  </div>
+
+  <div class="controls">
+    <div class="arrow prev"></div>
+    <div class="arrow next"></div>
+  </div>
+
+
+  <script type="text/javascript">
+    /**
+ * Returns the current page number of the presentation.
+ */
+function currentPosition() {
+  return parseInt(document.querySelector('.slide:not(.hidden)').id.slice(6));
+}
+
+
+/**
+ * Navigates forward n pages
+ * If n is negative, we will navigate in reverse
+ */
+function navigate(n) {
+  var position = currentPosition();
+  var numSlides = document.getElementsByClassName('slide').length;
+
+  /* Positions are 1-indexed, so we need to add and subtract 1 */
+  var nextPosition = (position - 1 + n) % numSlides + 1;
+
+  /* Normalize nextPosition in-case of a negative modulo result */
+  nextPosition = (nextPosition - 1 + numSlides) % numSlides + 1;
+
+  document.getElementById('slide-' + position).classList.add('hidden');
+  document.getElementById('slide-' + nextPosition).classList.remove('hidden');
+
+  updateProgress();
+  updateURL();
+  updateTabIndex();
+}
+
+
+/**
+ * Updates the current URL to include a hashtag of the current page number.
+ */
+function updateURL() {
+  window.history.replaceState({} , null, '#' + currentPosition());
+}
+
+
+/**
+ * Sets the progress indicator.
+ */
+function updateProgress() {
+  var progressBar = document.querySelector('.progress-bar');
+
+  if (progressBar !== null) {
+    var numSlides = document.getElementsByClassName('slide').length;
+    var position = currentPosition() - 1;
+    var percent = (numSlides === 1) ? 100 : 100 * position / (numSlides - 1);
+    progressBar.style.width = percent.toString() + '%';
+  }
+}
+
+
+/**
+ * Removes tabindex property from all links on the current slide, sets
+ * tabindex = -1 for all links on other slides. Prevents slides from appearing
+ * out of control.
+ */
+function updateTabIndex() {
+  var allLinks = document.querySelectorAll('.slide a');
+  var position = currentPosition();
+  var currentPageLinks = document.getElementById('slide-' + position).querySelectorAll('a');
+  var i;
+
+  for (i = 0; i < allLinks.length; i++) {
+    allLinks[i].setAttribute('tabindex', -1);
+  }
+
+  for (i = 0; i < currentPageLinks.length; i++) {
+    currentPageLinks[i].removeAttribute('tabindex');
+  }
+}
+
+/**
+ * Determines whether or not we are currently in full screen mode
+ */
+function isFullScreen() {
+  return document.fullscreenElement ||
+         document.mozFullScreenElement ||
+         document.webkitFullscreenElement ||
+         document.msFullscreenElement;
+}
+
+/**
+ * Toggle fullScreen mode on document element.
+ * Works on chrome (>= 15), firefox (>= 9), ie (>= 11), opera(>= 12.1), safari (>= 5).
+ */
+function toggleFullScreen() {
+  /* Convenient renames */
+  var docElem = document.documentElement;
+  var doc = document;
+
+  docElem.requestFullscreen =
+      docElem.requestFullscreen ||
+      docElem.msRequestFullscreen ||
+      docElem.mozRequestFullScreen ||
+      docElem.webkitRequestFullscreen.bind(docElem, Element.ALLOW_KEYBOARD_INPUT);
+
+  doc.exitFullscreen =
+      doc.exitFullscreen ||
+      doc.msExitFullscreen ||
+      doc.mozCancelFullScreen ||
+      doc.webkitExitFullscreen;
+
+  isFullScreen() ? doc.exitFullscreen() : docElem.requestFullscreen();
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Update the tabindex to prevent weird slide transitioning
+  updateTabIndex();
+
+  // If the location hash specifies a page number, go to it.
+  var page = window.location.hash.slice(1);
+  if (page) {
+    navigate(parseInt(page) - 1);
+  }
+
+  document.onkeydown = function (e) {
+    var kc = e.keyCode;
+
+    // left, down, H, J, backspace, PgUp - BACK
+    // up, right, K, L, space, PgDn - FORWARD
+    // enter - FULLSCREEN
+    if (kc === 37 || kc === 40 || kc === 8 || kc === 72 || kc === 74 || kc === 33) {
+      navigate(-1);
+    } else if (kc === 38 || kc === 39 || kc === 32 || kc === 75 || kc === 76 || kc === 34) {
+      navigate(1);
+    } else if (kc === 13) {
+      toggleFullScreen();
+    }
+  };
+
+  if (document.querySelector('.next') && document.querySelector('.prev')) {
+    document.querySelector('.next').onclick = function (e) {
+      e.preventDefault();
+      navigate(1);
+    };
+
+    document.querySelector('.prev').onclick = function (e) {
+      e.preventDefault();
+      navigate(-1);
+    };
+  }
+});
+
+
+  </script>
+</body>
+</html>
