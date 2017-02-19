@@ -12,7 +12,7 @@ controls: true
 
 
 # Elm & Build tools
-## Walking on fresh snow
+## Walking on untouched snow
 
 --
 
@@ -23,6 +23,7 @@ controls: true
 - @eeue56
 - Fusetools
 - Previously NoRedInk
+
 
 --
 
@@ -38,9 +39,12 @@ controls: true
 
 ### elm-package
 
-- manages dependencies and figures out what packages you need to download
-- packages hosted on github
-- package metadata is hosted on package.elm-lang.org
+- Manages dependencies 
+- Packages hosted on Github
+- Package metadata is hosted on package.elm-lang.org
+  - elm-package.json
+  - Documentation
+
 
 --
 
@@ -48,10 +52,8 @@ controls: true
 
 - Slow
 - Flakey as a host
-- Sometimes goes down
-- Tests run lots of times, github becomes a bottleneck
 - `elm-package` unreliability meant slower tests
-- One of the bigger pain points with Elm
+- For a large site, slow test times are a problem
 
 --
 
@@ -94,7 +96,19 @@ sys 0m0.109s
 
 - `elm-stuff/packages` can be copied and shared
 - `elm-stuff/build-artifacts` can be dangerous to copy
+  - Elm can encounter hard locks
 - Avoid symlinking
+  - Elm can encounter hard locks
+
+--
+
+### Run your own Elm-package
+
+- Make elm-package point elsewhere
+  - https://github.com/elm-lang/elm-package/pull/247
+- Make elm-package use a cached
+  - https://github.com/elm-lang/elm-package/pull/245
+
 
 --
 
@@ -117,7 +131,7 @@ sys 0m0.109s
   - Support for all your frontend
   - Some caching
 - Brunch
-  - Similar to webpack
+- Sprockets
 
 --
 ### Webpack
@@ -133,26 +147,26 @@ sys 0m0.109s
 ### Example
 
 - Main.elm
-
 ```elm
-
 module Main exposing (..)
 import Model
 import Update
-
 ```
 
 - Model.elm
-
 ```elm
 module Model exposing (..)
 ```
 
 - Update.elm
-
 ```
 module Update exposing (..)
 import Model
+```
+
+- Collected imports
+```
+imports = [ "Main.elm", "Update.elm", "Model.elm", "Update.elm"]
 ```
 
 --
@@ -161,57 +175,55 @@ import Model
 
 - `findAllDependencies`
   - Look through files recursively
+  - Run on the whole tree everytime a file is changed
 - `newImports`
   - Parse out new imports
+  - 0-20 per file
 
 --
 
-### I see trees of green
+### My nemesis
 
 ```js
 fs.readFile(file, {encoding: "utf8"}, function(err, lines) {
-  if (err) {
-    reject(err);
-  } else {
-    // Turn e.g. ~/code/elm-css/src/Css.elm
-    // into just ~/code/elm-css/src/
-    var newImports = _.compact(lines.split("\n").map(function(line) {
-      var matches = line.match(/^import\s+([^\s]+)/);
+  // Turn e.g. ~/code/elm-css/src/Css.elm
+  // into just ~/code/elm-css/src/
+  var newImports = _.compact(lines.split("\n").map(function(line) {
+    var matches = line.match(/^import\s+([^\s]+)/);
 
-      if (matches) {
-        // e.g. Css.Declarations
-        var moduleName = matches[1];
+      // e.g. Css.Declarations
+      var moduleName = matches[1];
 
-        // e.g. Css/Declarations
-        var dependencyLogicalName = moduleName.replace(/\./g, "/");
+      // e.g. Css/Declarations
+      var dependencyLogicalName = moduleName.replace(/\./g, "/");
 
-        // e.g. ~/code/elm-css/src/Css/Declarations.elm
-        var result = path.join(baseDir, dependencyLogicalName)
+      // e.g. ~/code/elm-css/src/Css/Declarations.elm
+      var result = path.join(baseDir, dependencyLogicalName)
 
-        return _.includes(knownDependencies, result) ? null : result;
-      } else {
-        return null;
-      }
-    }));
+      return _.includes(knownDependencies, result) ? null : result;
+}));
 
 ```
 -- 
 
-### Red roses too
+### Symptoms of horror
 
-- Max number of watches
-- Node would hit max memory usage
-- Webpack build times increased _hugely_
-- Errors would happen based entirely randomly on how webpack processed things
+- Run on 300+ files
+- Max number of watches (~12.000)
+- Node would hit max memory usage (~1.2GB)
+- Webpack build times increased _hugely_ (~80x)
+- Errors would happen based entirely randomly on how webpack processed things (`Error! Your one sass file is bad!`)
 
 
 -- 
 
-### I see them bloom
+### What to do?
 
+- Blocking deploys and developers
 - Rewrite node-elm-compiler!
 - Only parse modules in watch mode!
-- Parse modules lazily as possible, reading only what's needed
+- Parse modules lazily as possible
+
 
 --
 
@@ -248,7 +260,7 @@ function readImports(file){
 
 --
 
-### And I sing to myself
+### The performance PR
 
 - 700 line files only loaded in memory for 20 lines
 - Reduced memory usage by about 50% (1.1GB -> 400MB)
@@ -257,9 +269,11 @@ function readImports(file){
 
 --
 
-### What a wonderful world
+### New features for webpack
+
 
 - Limit the number of Elm-make processes to 1
+  - Avoid competition for files
 - Avoid parsing Elm source code as part of your build chain
 - Avoid parsing at all before elm-make
 
@@ -385,6 +399,7 @@ var AssetUrl = function(str){
 --
 
 ### Key take aways
-- It's easy to solve elm-package slowness through caching
+- It's easy to solve elm-package slowness through caching locally
+  - But make sure you cache the right things
 - Avoid writing your own build tools
 - Post-processing compiled Elm allows you to have JS capabilities

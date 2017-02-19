@@ -396,6 +396,7 @@ section {
 }
 
   </style>
+    <script async src="http://localhost:35729/livereload.js"></script>
 </head>
 <body>
     <div class="progress">
@@ -404,7 +405,7 @@ section {
 
   <div class="slide" id="slide-1">
     <section class="slide-content"><h1 id="elm-build-tools">Elm &amp; Build tools</h1>
-<h2 id="walking-on-fresh-snow">Walking on fresh snow</h2>
+<h2 id="walking-on-untouched-snow">Walking on untouched snow</h2>
 </section>
   </div>
   <div class="slide hidden" id="slide-2">
@@ -429,9 +430,13 @@ section {
   <div class="slide hidden" id="slide-4">
     <section class="slide-content"><h3 id="elm-package">elm-package</h3>
 <ul>
-<li>manages dependencies and figures out what packages you need to download</li>
-<li>packages hosted on github</li>
-<li>package metadata is hosted on package.elm-lang.org</li>
+<li>Manages dependencies </li>
+<li>Packages hosted on Github</li>
+<li>Package metadata is hosted on package.elm-lang.org<ul>
+<li>elm-package.json</li>
+<li>Documentation</li>
+</ul>
+</li>
 </ul>
 </section>
   </div>
@@ -440,10 +445,8 @@ section {
 <ul>
 <li>Slow</li>
 <li>Flakey as a host</li>
-<li>Sometimes goes down</li>
-<li>Tests run lots of times, github becomes a bottleneck</li>
 <li><code>elm-package</code> unreliability meant slower tests</li>
-<li>One of the bigger pain points with Elm</li>
+<li>For a large site, slow test times are a problem</li>
 </ul>
 </section>
   </div>
@@ -481,12 +484,32 @@ section {
     <section class="slide-content"><h3 id="just-copy-things">Just copy things</h3>
 <ul>
 <li><code>elm-stuff/packages</code> can be copied and shared</li>
-<li><code>elm-stuff/build-artifacts</code> can be dangerous to copy</li>
-<li>Avoid symlinking</li>
+<li><code>elm-stuff/build-artifacts</code> can be dangerous to copy<ul>
+<li>Elm can encounter hard locks</li>
+</ul>
+</li>
+<li>Avoid symlinking<ul>
+<li>Elm can encounter hard locks</li>
+</ul>
+</li>
 </ul>
 </section>
   </div>
   <div class="slide hidden" id="slide-9">
+    <section class="slide-content"><h3 id="run-your-own-elm-package">Run your own Elm-package</h3>
+<ul>
+<li>Make elm-package point elsewhere<ul>
+<li><a href="https://github.com/elm-lang/elm-package/pull/247">https://github.com/elm-lang/elm-package/pull/247</a></li>
+</ul>
+</li>
+<li>Make elm-package use a cached<ul>
+<li><a href="https://github.com/elm-lang/elm-package/pull/245">https://github.com/elm-lang/elm-package/pull/245</a></li>
+</ul>
+</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-10">
     <section class="slide-content"><h3 id="elm-make">elm-make</h3>
 <ul>
 <li>Comes with Elm</li>
@@ -497,7 +520,7 @@ section {
 </ul>
 </section>
   </div>
-  <div class="slide hidden" id="slide-10">
+  <div class="slide hidden" id="slide-11">
     <section class="slide-content"><h3 id="build-tools">Build tools</h3>
 <ul>
 <li>Webpack<ul>
@@ -508,14 +531,12 @@ section {
 <li>Some caching</li>
 </ul>
 </li>
-<li>Brunch<ul>
-<li>Similar to webpack</li>
-</ul>
-</li>
+<li>Brunch</li>
+<li>Sprockets</li>
 </ul>
 </section>
   </div>
-  <div class="slide hidden" id="slide-11">
+  <div class="slide hidden" id="slide-12">
     <section class="slide-content"><h3 id="webpack">Webpack</h3>
 <ul>
 <li>node-elm-compiler</li>
@@ -526,88 +547,86 @@ section {
 </ul>
 </section>
   </div>
-  <div class="slide hidden" id="slide-12">
+  <div class="slide hidden" id="slide-13">
     <section class="slide-content"><h3 id="example">Example</h3>
 <ul>
-<li>Main.elm</li>
-</ul>
-<pre><code class="lang-elm">
-<span class="hljs-keyword">module</span> Main exposing (..)
+<li><p>Main.elm</p>
+<pre><code class="lang-elm"><span class="hljs-keyword">module</span> Main exposing (..)
 import Model
 import Update</code></pre>
-<ul>
-<li>Model.elm</li>
-</ul>
+</li>
+<li><p>Model.elm</p>
 <pre><code class="lang-elm"><span class="hljs-keyword">module</span> Model exposing (..)</code></pre>
-<ul>
-<li>Update.elm</li>
-</ul>
+</li>
+<li><p>Update.elm</p>
 <pre><code>module Update exposing (..)
 import Model</code></pre>
-</section>
-  </div>
-  <div class="slide hidden" id="slide-13">
-    <section class="slide-content"><h3 id="finding-deps">Finding deps</h3>
-<ul>
-<li><code>findAllDependencies</code><ul>
-<li>Look through files recursively</li>
-</ul>
 </li>
-<li><code>newImports</code><ul>
-<li>Parse out new imports</li>
-</ul>
+<li><p>Collected imports</p>
+<pre><code>imports = [ &quot;Main.elm&quot;, &quot;Update.elm&quot;, &quot;Model.elm&quot;, &quot;Update.elm&quot;]</code></pre>
 </li>
 </ul>
 </section>
   </div>
   <div class="slide hidden" id="slide-14">
-    <section class="slide-content"><h3 id="i-see-trees-of-green">I see trees of green</h3>
-<pre><code class="lang-js">fs.readFile(file, {encoding: <span class="hljs-string">"utf8"</span>}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, lines</span>) </span>{
-  <span class="hljs-keyword">if</span> (err) {
-    reject(err);
-  } <span class="hljs-keyword">else</span> {
-    <span class="hljs-comment">// Turn e.g. ~/code/elm-css/src/Css.elm</span>
-    <span class="hljs-comment">// into just ~/code/elm-css/src/</span>
-    <span class="hljs-keyword">var</span> newImports = _.compact(lines.split(<span class="hljs-string">"\n"</span>).map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">line</span>) </span>{
-      <span class="hljs-keyword">var</span> matches = line.match(<span class="hljs-regexp">/^import\s+([^\s]+)/</span>);
-
-      <span class="hljs-keyword">if</span> (matches) {
-        <span class="hljs-comment">// e.g. Css.Declarations</span>
-        <span class="hljs-keyword">var</span> moduleName = matches[<span class="hljs-number">1</span>];
-
-        <span class="hljs-comment">// e.g. Css/Declarations</span>
-        <span class="hljs-keyword">var</span> dependencyLogicalName = moduleName.replace(<span class="hljs-regexp">/\./g</span>, <span class="hljs-string">"/"</span>);
-
-        <span class="hljs-comment">// e.g. ~/code/elm-css/src/Css/Declarations.elm</span>
-        <span class="hljs-keyword">var</span> result = path.join(baseDir, dependencyLogicalName)
-
-        <span class="hljs-keyword">return</span> _.includes(knownDependencies, result) ? <span class="hljs-literal">null</span> : result;
-      } <span class="hljs-keyword">else</span> {
-        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
-      }
-    }));</code></pre>
+    <section class="slide-content"><h3 id="finding-deps">Finding deps</h3>
+<ul>
+<li><code>findAllDependencies</code><ul>
+<li>Look through files recursively</li>
+<li>Run on the whole tree everytime a file is changed</li>
+</ul>
+</li>
+<li><code>newImports</code><ul>
+<li>Parse out new imports</li>
+<li>0-20 per file</li>
+</ul>
+</li>
+</ul>
 </section>
   </div>
-  <div class="slide hidden  " id="slide-15">
-    <section class="slide-content"><h3 id="red-roses-too">Red roses too</h3>
-<ul>
-<li>Max number of watches</li>
-<li>Node would hit max memory usage</li>
-<li>Webpack build times increased <em>hugely</em></li>
-<li>Errors would happen based entirely randomly on how webpack processed things</li>
-</ul>
+  <div class="slide hidden" id="slide-15">
+    <section class="slide-content"><h3 id="my-nemesis">My nemesis</h3>
+<pre><code class="lang-js">fs.readFile(file, {encoding: <span class="hljs-string">"utf8"</span>}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err, lines</span>) </span>{
+  <span class="hljs-comment">// Turn e.g. ~/code/elm-css/src/Css.elm</span>
+  <span class="hljs-comment">// into just ~/code/elm-css/src/</span>
+  <span class="hljs-keyword">var</span> newImports = _.compact(lines.split(<span class="hljs-string">"\n"</span>).map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">line</span>) </span>{
+    <span class="hljs-keyword">var</span> matches = line.match(<span class="hljs-regexp">/^import\s+([^\s]+)/</span>);
+
+      <span class="hljs-comment">// e.g. Css.Declarations</span>
+      <span class="hljs-keyword">var</span> moduleName = matches[<span class="hljs-number">1</span>];
+
+      <span class="hljs-comment">// e.g. Css/Declarations</span>
+      <span class="hljs-keyword">var</span> dependencyLogicalName = moduleName.replace(<span class="hljs-regexp">/\./g</span>, <span class="hljs-string">"/"</span>);
+
+      <span class="hljs-comment">// e.g. ~/code/elm-css/src/Css/Declarations.elm</span>
+      <span class="hljs-keyword">var</span> result = path.join(baseDir, dependencyLogicalName)
+
+      <span class="hljs-keyword">return</span> _.includes(knownDependencies, result) ? <span class="hljs-literal">null</span> : result;
+}));</code></pre>
 </section>
   </div>
   <div class="slide hidden  " id="slide-16">
-    <section class="slide-content"><h3 id="i-see-them-bloom">I see them bloom</h3>
+    <section class="slide-content"><h3 id="symptoms-of-horror">Symptoms of horror</h3>
 <ul>
-<li>Rewrite node-elm-compiler!</li>
-<li>Only parse modules in watch mode!</li>
-<li>Parse modules lazily as possible, reading only what&#39;s needed</li>
+<li>Run on 300+ files</li>
+<li>Max number of watches (~12.000)</li>
+<li>Node would hit max memory usage (~1.2GB)</li>
+<li>Webpack build times increased <em>hugely</em> (~80x)</li>
+<li>Errors would happen based entirely randomly on how webpack processed things (<code>Error! Your one sass file is bad!</code>)</li>
 </ul>
 </section>
   </div>
-  <div class="slide hidden" id="slide-17">
+  <div class="slide hidden  " id="slide-17">
+    <section class="slide-content"><h3 id="what-to-do-">What to do?</h3>
+<ul>
+<li>Blocking deploys and developers</li>
+<li>Rewrite node-elm-compiler!</li>
+<li>Only parse modules in watch mode!</li>
+<li>Parse modules lazily as possible</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-18">
     <section class="slide-content"><h3 id="for-me-and-for-you">For me and for you</h3>
 <pre><code class="lang-js">
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">readImports</span>(<span class="hljs-params">file</span>)</span>{
@@ -637,8 +656,8 @@ import Model</code></pre>
 }</code></pre>
 </section>
   </div>
-  <div class="slide hidden" id="slide-18">
-    <section class="slide-content"><h3 id="and-i-sing-to-myself">And I sing to myself</h3>
+  <div class="slide hidden" id="slide-19">
+    <section class="slide-content"><h3 id="the-performance-pr">The performance PR</h3>
 <ul>
 <li>700 line files only loaded in memory for 20 lines</li>
 <li>Reduced memory usage by about 50% (1.1GB -&gt; 400MB)</li>
@@ -647,16 +666,19 @@ import Model</code></pre>
 </ul>
 </section>
   </div>
-  <div class="slide hidden" id="slide-19">
-    <section class="slide-content"><h3 id="what-a-wonderful-world">What a wonderful world</h3>
+  <div class="slide hidden" id="slide-20">
+    <section class="slide-content"><h3 id="new-features-for-webpack">New features for webpack</h3>
 <ul>
-<li>Limit the number of Elm-make processes to 1</li>
+<li>Limit the number of Elm-make processes to 1<ul>
+<li>Avoid competition for files</li>
+</ul>
+</li>
 <li>Avoid parsing Elm source code as part of your build chain</li>
 <li>Avoid parsing at all before elm-make</li>
 </ul>
 </section>
   </div>
-  <div class="slide hidden" id="slide-20">
+  <div class="slide hidden" id="slide-21">
     <section class="slide-content"><h3 id="deploying-modern-web-applications">Deploying modern web applications</h3>
 <ul>
 <li>Large websites need static content to be hosted by CDNs</li>
@@ -665,14 +687,14 @@ import Model</code></pre>
 </ul>
 </section>
   </div>
-  <div class="slide hidden  " id="slide-21">
+  <div class="slide hidden  " id="slide-22">
     <section class="slide-content"><h3 id="assets-get-sha-d">Assets get sha&#39;d</h3>
 <pre><code class="lang-python"><span class="hljs-string">"/asset/star.png"</span></code></pre>
 <p>might get turned into</p>
 <pre><code class="lang-python"><span class="hljs-string">"/asset/star344r592we993sd.png"</span></code></pre>
 </section>
   </div>
-  <div class="slide hidden -" id="slide-22">
+  <div class="slide hidden -" id="slide-23">
     <section class="slide-content"><h3 id="example-of-a-view-in-elm">Example of a view in Elm</h3>
 <ul>
 <li>How can we turn</li>
@@ -689,7 +711,7 @@ import Model</code></pre>
     img [ src <span class="hljs-string">"/assets/star344r592we993sd.png"</span> ] [ ]</code></pre>
 </section>
   </div>
-  <div class="slide hidden" id="slide-23">
+  <div class="slide hidden" id="slide-24">
     <section class="slide-content"><h3 id="decisions">Decisions</h3>
 <ul>
 <li>Process Elm before compile<ul>
@@ -703,7 +725,7 @@ import Model</code></pre>
 </ul>
 </section>
   </div>
-  <div class="slide hidden" id="slide-24">
+  <div class="slide hidden" id="slide-25">
     <section class="slide-content"><h3 id="post-processing-elm">Post-processing Elm</h3>
 <pre><code class="lang-elm">
 <span class="hljs-keyword">type</span> <span class="hljs-type">AssetUrl</span> = <span class="hljs-type">AssetUrl</span> <span class="hljs-type">String</span>
@@ -725,7 +747,7 @@ import Model</code></pre>
 </ul>
 </section>
   </div>
-  <div class="slide hidden" id="slide-25">
+  <div class="slide hidden" id="slide-26">
     <section class="slide-content"><h3 id="how">How</h3>
 <ul>
 <li>AssetUrl looks like this in dev</li>
@@ -747,7 +769,7 @@ import Model</code></pre>
 }</code></pre>
 </section>
   </div>
-  <div class="slide hidden" id="slide-26">
+  <div class="slide hidden" id="slide-27">
     <section class="slide-content"><h2 id="go-check-it-out-">Go check it out!</h2>
 <ul>
 <li><a href="https://github.com/NoRedInk/elm-asset-path">https://github.com/NoRedInk/elm-asset-path</a></li>
@@ -755,16 +777,19 @@ import Model</code></pre>
 </ul>
 </section>
   </div>
-  <div class="slide hidden" id="slide-27">
+  <div class="slide hidden" id="slide-28">
     <section class="slide-content"><h3 id="key-take-aways">Key take aways</h3>
 <ul>
-<li>It&#39;s easy to solve elm-package slowness through caching</li>
+<li>It&#39;s easy to solve elm-package slowness through caching locally<ul>
+<li>But make sure you cache the right things</li>
+</ul>
+</li>
 <li>Avoid writing your own build tools</li>
 <li>Post-processing compiled Elm allows you to have JS capabilities</li>
 </ul>
 </section>
   </div>
-  <div class="slide hidden author-slide" id="slide-28">
+  <div class="slide hidden author-slide" id="slide-29">
     <section class="slide-content"><div class="author">
   <h1 class="name">Noah (eeue56)</h1>
     <h3 class="twitter">
