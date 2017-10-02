@@ -1,0 +1,67 @@
+var _user$project$BadRegexExample$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$none;
+};
+var _user$project$BadRegexExample$update = F2(
+	function (_p0, model) {
+		var _p1 = _p0;
+		var _p2 = _p1._0;
+		var newRegex = _elm_lang$core$Regex$regex(_p2);
+		return {ctor: '_Tuple2', _0: _p2, _1: _elm_lang$core$Platform_Cmd$none};
+	});
+var _user$project$BadRegexExample$init = {ctor: '_Tuple2', _0: '', _1: _elm_lang$core$Platform_Cmd$none};
+var _user$project$BadRegexExample$defaultText = '\n\nHello Elm Europe! It\'s so lovely to see you all in one place.\nHope you have a great time!\n\n';
+var _user$project$BadRegexExample$NewRegex = function (a) {
+	return {ctor: 'NewRegex', _0: a};
+};
+var _user$project$BadRegexExample$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$input,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$placeholder('Enter a regex!'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onInput(_user$project$BadRegexExample$NewRegex),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$style(
+								{
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'width', _1: '100%'},
+									_1: {
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'border-radius', _1: '3px'},
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'border-width', _1: '3px'},
+											_1: {
+												ctor: '::',
+												_0: {ctor: '_Tuple2', _0: 'border-style', _1: 'solid'},
+												_1: {
+													ctor: '::',
+													_0: {ctor: '_Tuple2', _0: 'margin-bottom', _1: '50px'},
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}
+				},
+				{ctor: '[]'}),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html$text(model),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$BadRegexExample$main = _elm_lang$html$Html$program(
+	{init: _user$project$BadRegexExample$init, update: _user$project$BadRegexExample$update, view: _user$project$BadRegexExample$view, subscriptions: _user$project$BadRegexExample$subscriptions})();

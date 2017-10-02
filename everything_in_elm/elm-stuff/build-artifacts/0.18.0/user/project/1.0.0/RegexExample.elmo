@@ -1,0 +1,296 @@
+var _user$project$RegexExample$decodeRegex = _elm_lang$core$Json_Decode$oneOf(
+	{
+		ctor: '::',
+		_0: A2(
+			_elm_lang$core$Json_Decode$map,
+			_elm_lang$core$Result$Ok,
+			A2(_elm_lang$core$Json_Decode$field, 'Ok', _elm_lang$core$Json_Decode$string)),
+		_1: {
+			ctor: '::',
+			_0: A2(
+				_elm_lang$core$Json_Decode$map,
+				_elm_lang$core$Result$Err,
+				A2(_elm_lang$core$Json_Decode$field, 'Err', _elm_lang$core$Json_Decode$string)),
+			_1: {ctor: '[]'}
+		}
+	});
+var _user$project$RegexExample$viewYellow = function (str) {
+	return A2(
+		_elm_lang$html$Html$span,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(
+				{
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'background-color', _1: 'yellow'},
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text(str),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$RegexExample$viewGreen = function (str) {
+	return A2(
+		_elm_lang$html$Html$span,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(
+				{
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'background-color', _1: 'green'},
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text(str),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$RegexExample$viewInvalidRegexError = function (error) {
+	return _elm_lang$html$Html$text(error);
+};
+var _user$project$RegexExample$viewSearchableText = function (model) {
+	var _p0 = model.regex;
+	if (_p0.ctor === 'Ok') {
+		if (_p0._0.ctor === 'Nothing') {
+			return _elm_lang$html$Html$text(model.searchableText);
+		} else {
+			var _p1 = _p0._0._0;
+			return A2(_elm_lang$core$Regex$contains, _p1, model.searchableText) ? A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				A2(
+					_elm_lang$core$List$indexedMap,
+					F2(
+						function (i, str) {
+							return _elm_lang$core$Native_Utils.eq(
+								A2(_elm_lang$core$Basics_ops['%'], i, 2),
+								0) ? _elm_lang$html$Html$text(str) : _user$project$RegexExample$viewGreen(str);
+						}),
+					A2(
+						_elm_lang$core$String$split,
+						'|',
+						A4(
+							_elm_lang$core$Regex$replace,
+							_elm_lang$core$Regex$All,
+							_p1,
+							function (match) {
+								return A2(
+									_elm_lang$core$Basics_ops['++'],
+									'|',
+									A2(_elm_lang$core$Basics_ops['++'], match.match, '|'));
+							},
+							model.searchableText)))) : A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(model.searchableText),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$style(
+									{
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'width', _1: '100%'},
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'border-radius', _1: '3px'},
+											_1: {
+												ctor: '::',
+												_0: {ctor: '_Tuple2', _0: 'border-width', _1: '3px'},
+												_1: {
+													ctor: '::',
+													_0: {ctor: '_Tuple2', _0: 'border-color', _1: 'yellow'},
+													_1: {
+														ctor: '::',
+														_0: {ctor: '_Tuple2', _0: 'border-style', _1: 'solid'},
+														_1: {
+															ctor: '::',
+															_0: {ctor: '_Tuple2', _0: 'margin-top', _1: '30px'},
+															_1: {ctor: '[]'}
+														}
+													}
+												}
+											}
+										}
+									}),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Failed to find any matches in the code!'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				});
+		}
+	} else {
+		return _user$project$RegexExample$viewInvalidRegexError(_p0._0);
+	}
+};
+var _user$project$RegexExample$defaultText = '\n\nHello Elm Europe! It\'s so lovely to see you all in one place.\nHope you have a great time!\n\n';
+var _user$project$RegexExample$init = {
+	ctor: '_Tuple2',
+	_0: {
+		isWaitingOnRegex: false,
+		userInput: '',
+		regex: _elm_lang$core$Result$Ok(_elm_lang$core$Maybe$Nothing),
+		color: 'white',
+		searchableText: _user$project$RegexExample$defaultText
+	},
+	_1: _elm_lang$core$Platform_Cmd$none
+};
+var _user$project$RegexExample$checkIfValidRegex = _elm_lang$core$Native_Platform.outgoingPort(
+	'checkIfValidRegex',
+	function (v) {
+		return v;
+	});
+var _user$project$RegexExample$update = F2(
+	function (msg, model) {
+		var _p2 = msg;
+		switch (_p2.ctor) {
+			case 'IsValidRegex':
+				var _p3 = _p2._0;
+				if (_p3.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								isWaitingOnRegex: false,
+								regex: _elm_lang$core$Result$Ok(
+									_elm_lang$core$Maybe$Just(
+										_elm_lang$core$Regex$regex(_p3._0))),
+								color: 'green'
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								isWaitingOnRegex: false,
+								regex: _elm_lang$core$Result$Err(_p3._0),
+								color: 'red'
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			case 'NewRegex':
+				var _p4 = _p2._0;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{isWaitingOnRegex: true, color: 'white', userInput: _p4}),
+					_1: _user$project$RegexExample$checkIfValidRegex(_p4)
+				};
+			default:
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		}
+	});
+var _user$project$RegexExample$isValidRegex = _elm_lang$core$Native_Platform.incomingPort('isValidRegex', _elm_lang$core$Json_Decode$value);
+var _user$project$RegexExample$Model = F5(
+	function (a, b, c, d, e) {
+		return {isWaitingOnRegex: a, userInput: b, regex: c, color: d, searchableText: e};
+	});
+var _user$project$RegexExample$NoOp = {ctor: 'NoOp'};
+var _user$project$RegexExample$NewRegex = function (a) {
+	return {ctor: 'NewRegex', _0: a};
+};
+var _user$project$RegexExample$view = function (model) {
+	return model.isWaitingOnRegex ? _elm_lang$html$Html$text('Watiing for the regex to come back..') : A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$input,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$placeholder('Enter a regex!'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onInput(_user$project$RegexExample$NewRegex),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$style(
+								{
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'width', _1: '100%'},
+									_1: {
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'border-color', _1: model.color},
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'border-radius', _1: '3px'},
+											_1: {
+												ctor: '::',
+												_0: {ctor: '_Tuple2', _0: 'border-width', _1: '3px'},
+												_1: {
+													ctor: '::',
+													_0: {ctor: '_Tuple2', _0: 'border-style', _1: 'solid'},
+													_1: {
+														ctor: '::',
+														_0: {ctor: '_Tuple2', _0: 'margin-bottom', _1: '50px'},
+														_1: {ctor: '[]'}
+													}
+												}
+											}
+										}
+									}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}
+				},
+				{ctor: '[]'}),
+			_1: {
+				ctor: '::',
+				_0: _user$project$RegexExample$viewSearchableText(model),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$RegexExample$IsValidRegex = function (a) {
+	return {ctor: 'IsValidRegex', _0: a};
+};
+var _user$project$RegexExample$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$batch(
+		{
+			ctor: '::',
+			_0: _user$project$RegexExample$isValidRegex(
+				function (_p5) {
+					return A2(
+						_elm_lang$core$Result$withDefault,
+						_user$project$RegexExample$NoOp,
+						A2(
+							_elm_lang$core$Result$map,
+							_user$project$RegexExample$IsValidRegex,
+							A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$RegexExample$decodeRegex, _p5)));
+				}),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$RegexExample$main = _elm_lang$html$Html$program(
+	{init: _user$project$RegexExample$init, update: _user$project$RegexExample$update, view: _user$project$RegexExample$view, subscriptions: _user$project$RegexExample$subscriptions})();

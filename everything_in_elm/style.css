@@ -1,0 +1,140 @@
+.slide-content {
+    height: 750px !important;
+    padding-top: 15px !important;
+    margin-top : 20px !important;
+    overflow: visible !important;
+    padding: 0px !important;
+}
+
+h4 {
+    margin-top: 15px !important;
+    margin-bottom: 0px !important;
+
+}
+
+ul {
+    margin-top: 5px !important;
+    padding-top: 5px !important;
+}
+
+li {
+    margin-top: 15px !important;
+}
+
+p {
+    margin-top: 35px !important;
+}
+
+sup {
+    font-size : 20px !important;
+}
+
+section {
+    margin-left: 326px !important;
+}
+
+input {
+    height: 80px;
+    font-size: 45pt;
+}
+
+.profile-pic {
+    float: left;
+    margin-right: 50px;
+}
+
+.front-profile-pic {
+    width: 50px;
+    left: 45%;
+    position: relative;
+}
+
+
+.title_page > section > h1 {
+    margin-top: 0px;
+}
+
+.blocks {
+    background-image: url("./images/blocks.jpeg");
+    background-position: center; 
+    background-size: 100% 100%;
+}
+
+.reality {
+    background-image: url("./images/reality.jpg");
+    background-position: center; 
+    background-size: 100% 100%;
+}
+
+.rubble {
+    background-image: url("./images/rubble.jpg");
+    background-position: center; 
+    background-size: 100% 100%;
+}
+
+.brick_making {
+    background-image: url("./images/brick_make.jpg");
+    background-position: center; 
+    background-size: 100% 100%;
+}
+
+.stone {
+    background-image: url("./images/stone.JPG");
+    background-position: center; 
+    background-size: 100% 100%;
+}
+
+.brick {
+    background-image: url("./images/brick.jpg");
+    background-position: center; 
+    background-size: 100% 100%;
+}
+
+
+.no_matches {
+    background-image: url("./images/nothing.png");
+    background-position: center; 
+    background-size: 70% 70%;
+    background-repeat: no-repeat;
+}
+
+.matches {
+    background-image: url("./images/matches.png");
+    background-position: center; 
+    background-size: 70% 50%;
+    background-repeat: no-repeat;
+}
+
+.regex_error {
+    background-image: url("./images/error.png");
+    background-position: center; 
+    background-size: 70% 50%;
+    background-repeat: no-repeat;
+}
+
+.good-question {
+    border-radius: 3px;
+    border-width: 3px;
+    border-style: solid;
+    border-color: green;
+    padding: 20px !important;
+    margin-top: 50px;
+}
+
+#question-padding {
+    padding: 20px;
+}
+
+.bad-question {
+    margin-top: 50px;
+    border-radius: 3px;
+    border-width: 3px;
+    border-style: solid;
+    border-color: red;
+    margin-bottom: 50px;
+    padding: 20px !important;
+}
+
+#bad-regex-example {
+    margin-top: -5px;
+}
